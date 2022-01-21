@@ -1,0 +1,257 @@
+-- 03 The SELECT statement
+-- world.db
+
+SELECT 'Hello, World';
+SELECT 'Hello, World' AS Result;
+SELECT * FROM Country;
+SELECT * FROM Country ORDER BY Name;
+SELECT Name, LifeExpectancy FROM Country ORDER BY Name;
+SELECT Name, LifeExpectancy AS "Life Expectancy" FROM Country ORDER BY Name;
+
+-- 04 Selecting Rows
+-- world.db
+
+SELECT Name, Continent, Region FROM Country;
+SELECT Name, Continent, Region FROM Country WHERE Continent = 'Europe';
+SELECT Name, Continent, Region FROM Country WHERE Continent = 'Europe' ORDER BY Name;
+SELECT Name, Continent, Region FROM Country WHERE Continent = 'Europe' ORDER BY Name LIMIT 5;
+SELECT Name, Continent, Region FROM Country WHERE Continent = 'Europe' ORDER BY Name LIMIT 5 OFFSET 5;
+
+-- 05 Selecting Columns
+-- world.db
+
+SELECT * from Country;
+SELECT Name, Continent, Region from Country;
+SELECT Name AS Country, Continent, Region from Country;
+SELECT Name AS Country, Region, Continent from Country;
+
+-- 06 Counting Rows
+-- world.db
+
+SELECT account_id as amount FROM orders
+GROUP BY account_id
+HAVING SUM(standard_qty * standard_amt_usd) > 60000
+
+
+select avg(duration) AS media FROM track;
+SELECT title, duration AS media FROM track HAVING AVG(duration) > 283;
+
+SELECT COUNT(*) FROM Country;
+SELECT COUNT(*) FROM Country WHERE Population > 1000000;
+SELECT COUNT(*) FROM Country WHERE Population > 100000000;
+SELECT COUNT(*) FROM Country WHERE Population > 100000000 AND Continent = 'Europe' ;
+
+SELECT COUNT(*) FROM Country;
+SELECT COUNT(LifeExpectancy) FROM Country;
+
+
+-- 02 LENGTH
+-- world.db
+
+SELECT LENGTH('string');
+SELECT Name, LENGTH(Name) AS Len FROM City ORDER BY Len DESC;
+
+-- 03 SUBSTR
+-- album.db
+
+SELECT SUBSTR('this string', 6);
+SELECT SUBSTR('this string', 6, 3);
+SELECT released,
+    SUBSTR(released, 1, 4) AS year,
+    SUBSTR(released, 6, 2) AS month,
+    SUBSTR(released, 9, 2) AS day
+  FROM album
+  ORDER BY released
+;
+
+SELECT SUBSTR(occurred_at, 1, 4) AS Year, account_id, ROUND(SUM(total_amt_usd),1) AS Total_amount
+FROM orders
+WHERE account_id = 4311
+GROUP BY SUBSTR(occurred_at, 1, 4), account_id
+ORDER BY 2 DESC;
+
+
+-- 04 TRIM
+
+SELECT TRIM('   string   ');
+SELECT LTRIM('   string   ');
+SELECT RTRIM('   string   ');
+SELECT TRIM('...string...', '.');
+
+-- 05 UPPER/LOWER
+-- world.db
+
+SELECT 'StRiNg' = 'string';
+SELECT LOWER('StRiNg') = LOWER('string');
+SELECT UPPER('StRiNg') = UPPER('string');
+SELECT UPPER(Name) FROM City ORDER BY Name;
+SELECT LOWER(Name) FROM City ORDER BY Name;
+
+
+-- 02 typeof
+
+SELECT TYPEOF( 1 + 1 );
+SELECT TYPEOF( 1 + 1.0 );
+SELECT TYPEOF('panda');
+SELECT TYPEOF('panda' + 'koala');
+
+-- 03 INTEGER division
+
+SELECT 1 / 2;
+SELECT 1.0 / 2;
+SELECT CAST(1 AS REAL) / 2;
+SELECT 17 / 5;
+SELECT 17 / 5, 17 % 5;
+
+
+-- 04 ROUND()
+
+SELECT 2.55555;
+SELECT ROUND(2.55555);
+SELECT ROUND(2.55555, 3);
+SELECT ROUND(2.55555, 0);
+
+
+-- 01 Aggregate Data
+-- world.db
+
+SELECT COUNT(*) FROM Country;
+
+SELECT Region, COUNT(*)
+  FROM Country
+  GROUP BY Region
+;
+
+SELECT Region, COUNT(*) AS Count
+  FROM Country
+  GROUP BY Region
+  ORDER BY Count DESC, Region
+;
+
+-- album.db
+
+SELECT a.title AS Album, COUNT(t.track_number) as Tracks
+  FROM track AS t
+  JOIN album AS a
+    ON a.id = t.album_id
+  GROUP BY a.id
+  ORDER BY Tracks DESC, Album
+;
+
+SELECT a.title AS Album, COUNT(t.track_number) as Tracks
+  FROM track AS t
+  JOIN album AS a
+    ON a.id = t.album_id
+  GROUP BY a.id
+  HAVING Tracks >= 10
+  ORDER BY Tracks DESC, Album
+;
+
+SELECT a.title AS Album, COUNT(t.track_number) as Tracks
+  FROM track AS t
+  JOIN album AS a
+    ON a.id = t.album_id
+  WHERE a.artist = 'The Beatles'
+  GROUP BY a.id
+  HAVING Tracks >= 10
+  ORDER BY Tracks DESC, Album
+;
+
+-- 02 Aggregate functions
+-- world.db
+SELECT COUNT(*) FROM Country;
+SELECT COUNT(Population) FROM Country;
+SELECT AVG(Population) FROM Country;
+SELECT Region, AVG(Population) FROM Country GROUP BY Region;
+SELECT Region, MIN(Population), MAX(Population) FROM Country GROUP BY Region;
+SELECT Region, SUM(Population) FROM Country GROUP BY Region;
+
+-- 03 DISTINCT Aggregates
+-- world.db
+
+SELECT COUNT(HeadOfState) FROM Country;
+SELECT HeadOfState FROM Country ORDER BY HeadOfState;
+SELECT COUNT(DISTINCT HeadOfState) FROM Country;
+
+
+
+-- 02 searching within a result set
+-- album.db
+
+SELECT DISTINCT album_id FROM track WHERE duration <= 90;
+
+SELECT * FROM album
+  WHERE id IN (SELECT DISTINCT album_id FROM track WHERE duration <= 90)
+;
+
+SELECT a.title AS album, a.artist, t.track_number AS seq, t.title, t.duration AS secs
+  FROM album AS a
+  JOIN track AS t
+    ON t.album_id = a.id
+  WHERE a.id IN (SELECT DISTINCT album_id FROM track WHERE duration <= 90)
+  ORDER BY a.title, t.track_number
+;
+
+SELECT a.title AS album, a.artist, t.track_number AS seq, t.title, t.duration AS secs
+  FROM album AS a
+  JOIN (
+    SELECT DISTINCT album_id, track_number, duration, title
+      FROM track
+      WHERE duration <= 90
+  ) AS t
+    ON t.album_id = a.id
+  ORDER BY a.title, t.track_number
+;
+
+-- 03 Creating a view
+-- album.db
+
+
+SELECT a.title AS album, a.artist
+  FROM album AS a
+  JOIN PROMEDIO AS P
+    ON P.album_id = a.id;
+
+SELECT id, album_id, title, track_number, 
+  duration / 60 AS m, duration % 60 AS s FROM track;
+
+CREATE VIEW trackView AS
+  SELECT id, album_id, title, track_number, 
+    duration / 60 AS m, duration % 60 AS s FROM track;
+SELECT * FROM trackView;
+
+SELECT a.title AS album, a.artist, t.track_number AS seq, t.title, t.m, t.s
+  FROM album AS a
+  JOIN trackView AS t
+    ON t.album_id = a.id
+  ORDER BY a.title, t.track_number
+;
+
+DROP VIEW IF EXISTS trackView;
+
+-- 04 Joined view
+-- album.db
+
+SELECT a.artist AS artist,
+    a.title AS album,
+    t.title AS track,
+    t.track_number AS trackno,
+    t.duration / 60 AS m,
+    t.duration % 60 AS s
+  FROM track AS t
+    JOIN album AS a
+      ON a.id = t.album_id
+;
+
+CREATE VIEW joinedAlbum AS
+  SELECT a.artist AS artist,
+      a.title AS album,
+      t.title AS track,
+      t.track_number AS trackno,
+      t.duration / 60 AS m,
+      t.duration % 60 AS s
+    FROM track AS t
+    JOIN album AS a
+      ON a.id = t.album_id
+;
+
