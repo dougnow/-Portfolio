@@ -1,0 +1,590 @@
+---
+title: 'R Notebook: basicos en R'
+output:
+  html_notebook: default
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+Richard Douglas Grijalba  @dougnow  
+
+Practicas realizadas  a nuve basico para el analisis de datos con R.
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+* Vectores
+* Arrays
+* Listas
+* Factores
+* Matrices
+* Dataframes
+```{r}
+# Vectores: un vector es una sucesión de elementos de una dimensión. Un vector puede soportar diferentes tipos de variables.
+
+vector <- 1:10
+vector
+```
+```{r}
+#Generar secuencias a través de la función seq, esta función toma como parámetros, origen de la secuencia, máximo de la secuencia, elemento de división.
+
+seq(-10,20,2)
+```
+```{r}
+seq(0, 1, 0.1)
+```
+```{r}
+#un array, todos sus elementos deben ser del mismo tipo, también son indexables. Para crear un array, haremos uso de la función array
+
+arr1 <- array(data= c(1,2,3,4,5,6,7,8,9), dim = c (3,2))
+arr1
+```
+```{r}
+new.arr <- array(1:40, c(5, 4, 2))
+new.arr
+```
+```{r}
+# Fila 4 de la segunda dimensión.
+new.arr[4, ,2]
+```
+```{r}
+colMeans(new.arr, dims = 2) # Media de columnas por dimensión
+
+```
+```{r}
+rowMeans(new.arr, dims = 2) # Media de filas por dimensión
+```
+```{r}
+# Suma de filas
+rowSums(new.arr, dims = 1) # Suma de todas las filas por fila
+```
+```{r}
+#  LISTAS: una lista, es una colección de objectos, indexable a través del operador [[ ]] (doble corchete). Soporta desde el mismo tipo de dato a, diferentes tipos de datos, la declaración de una lista se realiza desde la función list.
+
+my.list <- list(c(1:40))
+my.list
+```
+```{r}
+list_data <- list("Red", "Green", c(21,32,11), TRUE, 51.23, 119.1)
+print(list_data)
+```
+```{r}
+
+# Create a list containing a vector, a matrix and a list.
+list_data <- list(c("Jan","Feb","Mar"), matrix(c(3,9,5,1,-2,8), nrow = 2),
+   list("green",12.3))
+
+# Give names to the elements in the list.
+names(list_data) <- c("1st Quarter", "A_Matrix", "A Inner list")
+
+# Show the list.
+print(list_data)
+```
+```{r}
+#uniendo dos listas / MERGE lists
+# Create two lists.
+list1 <- list(1,2,3)
+list2 <- list("Sun","Mon","Tue")
+
+# Merge the two lists.
+merged.list <- c(list1,list2)
+
+# Print the merged list.
+print(merged.list)
+```
+```{r}
+new.list <- list(alumnos=c("Juan", "María", "Alfredo"),
+                calificaciones=c(7, 4,5, 9))
+new.list
+```
+```{r}
+# mostrar los datos de una de las listas
+new.list$alumnos
+```
+```{r}
+#agregando informacion a la lista
+
+new.list$alumnos <- c(new.list$alumnos, "Pablo_nuevo_alumno")
+new.list$alumnos
+```
+```{r}
+new.list$edad <- c(15, 16, 17, 15)
+
+new.list
+```
+```{r}
+#Matrices
+#Previamente, hemos tratado con arrays multi-dimensionales, una matriz no es ni más ni menos que un array de dos dimensiones. No obstante, las matrices tienen algunos tipos de funciones especiales con las que podemos trabajar, se describirán posteriormente.
+
+#Para crear una matriz se utiliza la función matrix, que recibe los datos de la propia matriz y, los parámetros nrow y ncol, adicionalmente, podremos especificar cómo queremos que se rellene la matriz a partir de los datos, por filas sí o no con el parámetro byrow
+
+# Creamos una matriz.
+my.mat <- matrix(1:30, ncol = 6, nrow = 5, byrow = F) # Probar byrow TRUE
+my.mat
+```
+```{r}
+# Número de columnas
+ncol(my.mat)
+```
+```{r}
+# Dataframes :  se hablará sobre dataframes, de forma resumida, un dataframe puede tratarse como una matriz o una lista, ya que cada columna, por lo general, tendrá un nombre, en dataframes hablaremos de variables en lugar de columnas, es importante añadir que todos los registros que aparezcan en el dataframe compartirán el mismo índice a nivel de fila. Un dataframe acepta diferentes tipos de datos.
+
+#se puede pasar una lista en data frame con la funcion data.frame()
+new_df <- data.frame(new.list)
+new_df
+```
+```{r}
+class(new_df)
+
+```
+```{r}
+# tambien se puede llamar un data frame de un arhcivo, de un conjunto de datos ya precargados en R, por medio de la web y otros tipos de archivos.
+
+df <- read.csv("FB.csv")
+```
+```{r}
+getwd()
+```
+```{r}
+head(df)
+```
+```{r}
+#resumen estadistico del data frame
+summary(df)
+```
+```{r}
+# Nombre de las columnas de un dataframe
+colnames(df)
+```
+```{r}
+# Nombre de las filas
+rownames(df)
+```
+```{r}
+#agregando un acolumna al dataframe
+#Otra forma de añadir una columna al dataframe es asignar el nombre a través del operador “$” y un vector de la misma longitud.
+
+df$Nueva_Columna <- '^'(as.numeric(df$High),2)
+```
+```{r}
+colnames(df)
+```
+```{r}
+#renombrar una columna
+# Renombramos una columna
+names(df)[2] <- "Precio-Apertura"
+
+names(df)
+```
+```{r}
+ install.packages("dplyr")
+```
+```{r}
+library(dplyr)
+```
+```{r}
+# vamos a llamar un dataset llamado Iris
+data("iris")
+```
+```{r}
+#Exploracion basica del dataset 
+head(iris)
+```
+```{r}
+ncol(iris)
+```
+
+
+```{r}
+nrow(iris)
+```
+```{r}
+#resumen estadistico del dataset
+
+summary(iris)
+
+```
+
+
+```{r}
+#queremos saber el nombre de las columnas 
+
+colnames(iris)
+```
+
+```{r}
+str(iris)
+```
+```{r}
+#que informacion contiene este dataset
+
+unique(iris$Species)
+```
+```{r}
+filter(iris, Sepal.Width == 5 )
+```
+```{r}
+filter(iris, Sepal.Width == 6)
+```
+
+
+```{r}
+filter(iris, Sepal.Width == 5 )
+```
+
+
+```{r}
+filter(iris, Sepal.Length == 5 )
+```
+
+
+```{r}
+# la funcion seect permite elegir las columnas que se requieren
+select(iris, Species, Sepal.Width)
+```
+
+
+```{r}
+#generar una agrupación
+
+iris %>% group_by(Species) %>%
+        summarise(media_sepal = mean(Sepal.Width))
+```
+
+
+```{r}
+```
+
+```{r}
+#verificacion de los nan
+apply(is.na(iris),2,sum)
+```
+```{r}
+#conocer el peso de los nan en el dataset
+apply(is.na(iris),2,sum)/(length(iris)*100)
+```
+```{r}
+data("cars")
+```
+```{r}
+#Conocer que contiene el dataset de cars
+#Description
+#The data give the speed of cars and the distances taken to stop. Note that the data were recorded in the 1920s.
+
+#Usage
+#cars
+#Format
+#A data frame with 50 observations on 2 variables.
+
+#[,1]	speed	numeric	Speed (mph)
+#[,2]	dist	numeric	Stopping distance (ft)
+
+?cars
+```
+```{r}
+ncol(cars)
+```
+
+
+```{r}
+nrow(cars       )
+```
+```{r}
+summary(cars)
+```
+
+
+```{r}
+#conocer cual es el maximo en speed en el dataset
+max(cars$speed)
+```
+```{r}
+min(cars$dist)
+```
+```{r}
+colnames(cars)
+```
+```{r}
+#llamando otro dataset
+
+data("mtcars")
+mtcars
+```
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+```{r}
+colnames(mtcars)
+```
+```{r}
+summary(mtcars)
+```
+```{r}
+#Visualizacion de datos con R
+```
+
+
+```{r}
+# un gafico de barras por cada una de las especies de la flor iris
+fact <- factor(c(iris$Species))
+
+plot(fact)
+
+```
+
+
+```{r}
+#un grafico de la totalidad del dataframe
+
+plot(iris)
+```
+
+
+```{r}
+#Diagrama de caja y bigotes
+
+#Diagrama de caja y bigotes para cada nivel de la variable factor. En un diagrama de caja y bigotes o boxplot se representan el elemento máximo y mínimo (líneas de los extremos) desde el primer cuartil (25 % de los datos) hasta el tercer cuartil (75 % de los datos) formando un cuadro, donde se añade una línea horizontal que corresponde con la mediana o segundo cuartil (50 % de los datos).
+
+
+x <- iris$Species
+y <- iris$Sepal.Length
+
+
+plot(x,y)
+```
+
+
+```{r}
+# crear un grafico de scatter plot, al cual se le deben agregar titulos
+plot(iris$Sepal.Length,iris$Sepal.Width,
+     ylab = "Sepal.Width",
+     xlab = "Sepal.Length",
+     main = "Satter Plot de  Iris- Sepa-Length & Sepal-Width")
+```
+
+
+```{r}
+# crear un grafico de scatter plot, al cual se le deben agregar titulos
+# agregar la variante de tipo = o 
+plot(iris$Sepal.Length,iris$Sepal.Width,
+     ylab = "Sepal.Width",
+     xlab = "Sepal.Length",
+     main = "Satter Plot de  Iris- Sepa-Length & Sepal-Width",
+     las= 1,
+     type = "o")
+```
+```{r}
+# crear un grafico de scatter plot, al cual se le deben agregar titulos
+# agregar la variante de tipo = h
+plot(iris$Sepal.Length,iris$Sepal.Width,
+     ylab = "Sepal.Width",
+     xlab = "Sepal.Length",
+     main = "Satter Plot de  Iris- Sepa-Length & Sepal-Width",
+     las= 1,
+     type = "h")
+```
+
+
+```{r}
+# crear un histograma de la distribucion de la frecuencia de Petal.length
+hist(iris$Petal.Length,
+     col = "red",
+     border = "blue")
+```
+
+
+```{r}
+# crear un histograma de la distribucion de la frecuencia de Petal.length
+hist(iris$Petal.Length,
+     col = "skyblue",
+     border = "black")
+```
+```{r}
+# crear un boxplot de la caracteristica Petal.Width
+boxplot(iris$Petal.Width,
+        border = "grey",
+        main= "Boxplot - Iris Petal-Width",
+        col = "darkseagreen")
+```
+
+
+```{r}
+# crear un grafico barplot con la caracteristica iris  Sepal-Length
+barplot(iris$Sepal.Length, border = rainbow(length(iris$Sepal.Length)))
+```
+
+
+```{r}
+plot(mtcars$hp,mtcars$mpg,
+     xlab="Caballos de fuerza (HP)",
+     ylab = "Millas x Galon",
+     col="blue",
+     main = "Relacion de HP y Millas x Galon")
+```
+
+
+```{r}
+pairs(mtcars[,2:6])
+```
+```{r}
+colnames(mtcars)
+```
+
+
+```{r}
+head(mtcars)
+```
+```{r}
+mtcars$model <- row.names(mtcars)
+```
+```{r}
+colnames(mtcars)
+```
+```{r}
+row.names(mtcars) <- NULL
+```
+
+```{r}
+colnames(mtcars)
+```
+```{r}
+head(mtcars)
+```
+```{r}
+x1 <- mtcars$model
+print(x1)
+```
+
+```{r}
+library(stringr)
+
+```
+
+```{r}
+x1
+```
+```{r}
+colnames(mtcars)
+```
+```{r}
+ncol(mtcars)
+```
+
+
+```{r}
+library(dplyr)
+```
+
+```{r}
+head(mtcars)
+```
+```{r}
+mtcars <- mtcars[,c(12,1,2,3,4,5,6,7,8,9,10,11)]
+```
+```{r}
+head(mtcars)
+```
+
+```{r}
+#buscar todos los modelos que contienen Merc de la marca mercedez
+mtcars %>% filter(grepl('Merc', model))
+```
+
+
+```{r}
+
+# se crea una talba pivote con resumen del promedio de las millas por galon segun la cantidad de cilindros de los modelos
+cilindros <- mtcars %>% group_by(cyl) %>%
+        summarise(media_mpg = mean(mpg),
+                  total_categoria = n())
+cilindros
+```
+
+```{r}
+# se crea una talba pivote con resumen del promedio de los Caballos d efuerza  segun la cantidad de cilindros de los modelos
+cilindros2 <- mtcars %>% group_by(cyl) %>%
+        summarise(media_hp = mean(hp),
+                  total_categoria = n())
+cilindros2
+```
+```{r}
+install.packages("ggplot2")
+
+library(ggplot2)
+```
+```{r}
+midwest
+```
+```{r}
+#obtner informacion del dataset
+#Midwest demographics
+#Description
+#Demographic information of midwest counties from 2000 US census
+?midwest
+```
+
+
+```{r}
+colnames(midwest)
+```
+
+
+```{r}
+summary(midwest)
+```
+```{r}
+library(tidyr)
+library(dplyr)
+```
+
+
+```{r}
+df <- gather(midwest, "pop_category", "population", c(5:11, 17, 21))
+df <- gather(df, "per_category", "pervalue", 5:17)
+
+# La gran mayoría de estas variables podrían dejarse como as.character sin problema.
+df <- df %>% transmute(
+  PID = as.factor(PID),
+  county = as.factor(county),
+  state = as.factor(state),
+  area = area,
+  inmetro = inmetro,
+  category = as.factor(category),
+  pop_category = as.factor(pop_category),
+  population = population,
+  per_category = as.factor(per_category),
+  pervalue = pervalue
+)
+summary(df)
+```
+
+
+```{r}
+colnames(df)
+```
+```{r}
+ggplot(data = df) +
+  geom_point(mapping = aes(x = pervalue, y = population))
+```
+```{r}
+install.packages("plotly")
+
+library(plotly)
+```
+
+```{r}
+# Crear un grafico con Ploty 
+fig <- plot_ly(
+  data = iris,
+  labels = ~Species,
+  values = ~Sepal.Length,
+  type = 'pie'
+) %>% layout(title = "Diagrama de sectores por Species",
+             xaxis = list(showgrid = FALSE),
+             yaxis = list(showgrid = FALSE))
+fig
+```
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
